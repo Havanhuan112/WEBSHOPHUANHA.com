@@ -173,7 +173,7 @@ document.querySelectorAll('.btn-play').forEach((btn) => {
     // Tạo dữ liệu giao dịch
     const purchaseData = {
       status: false,
-      bankInfo: "Ngân hàng Vietcombank - STK: 0123456789 - Nội dung: Thanh toán " + productId,
+      bankInfo: "Ngân hàng Mbbank - STK: 0325575642 - Nội dung: Thanh toán " + productId,
       userEmail: user.email,
       purchaseTime: firebase.database.ServerValue.TIMESTAMP,
       productId: productId
@@ -203,8 +203,8 @@ function showPaymentNotification(productId) {
   const messageP = document.getElementById('paymentMessage');
   modal.classList.remove('hidden');
   messageP.innerHTML = `Vui lòng chuyển khoản đến:<br/>
-    <strong>Ngân hàng Vietcombank</strong><br/>
-    Số tài khoản: <strong>0123456789</strong><br/>
+    <strong>Ngân hàng Mbbank</strong><br/>
+    Số tài khoản: <strong>0325575642</strong><br/>
     Nội dung chuyển khoản: <strong>Thanh toán ${productId}</strong><br/>
     Email: <strong>${firebase.auth().currentUser.email}</strong><br/>
     <i class="fas fa-spinner fa-spin"></i> Đang xử lý...`;
