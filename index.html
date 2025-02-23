@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>shophuanha.xyz</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- (Có thể bỏ link cũ nếu không cần) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      integrity="sha512-Sd6fUCRNIVOTe8DGfE7r2MdOx9op2A1I5q6F9HyVVJ7UkB9Rf7b3+6JzSZ6UTV3a2SdN7erh5+8NEB2v19rYxA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    
+    <!-- Link file CSS -->
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Firebase (v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <script>
+      // Cấu hình Firebase
+      var firebaseConfig = {
+        apiKey: "AIzaSyDExsK60Qz5T7INkOA-6lnxURB0vPOrpbI",
+        authDomain: "havanhuan-login.firebaseapp.com",
+        databaseURL: "https://havanhuan-login-default-rtdb.firebaseio.com",
+        projectId: "havanhuan-login",
+        storageBucket: "havanhuan-login.firebasestorage.app",
+        messagingSenderId: "1048157715289",
+        appId: "1:1048157715289:web:075769c06baa553eee6a48",
+        measurementId: "G-6FLD3F92BE"
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+  </head>
+  <body>
+    <!-- Menu Sidebar (ẩn) -->
+    <div class="sidebar" id="sidebar">
+      <span class="dong-btn" onclick="toggleMenu()">
+        <i class="fa-solid fa-xmark"></i>
+      </span>
+      <a href="#"><i class="fa-solid fa-landmark"></i> Nạp Tiền</a>
+      <a href="#" onclick="openWarning()"><i class="fa-solid fa-triangle-exclamation"></i> Lưu Ý Khi Mua</a>
+    </div>
+
+    <!-- Modal Cảnh Báo (Lưu Ý Khi Mua) -->
+    <div class="warning-box" id="warningBox">
+      <span class="close-warning" onclick="closeWarning()">
+        <i class="fa-solid fa-xmark"></i>
+      </span>
+      <p class="warning-content">
+        <span class="red"><i class="fa-solid fa-triangle-exclamation"></i> CẢNH BÁO:</span> Vui lòng đọc kỹ thông tin trước khi mua!  
+        <br>
+        <span class="blue">Kiểm tra chuyển khoản đúng số tài khoản & nội dung.</span>  
+        <br>
+        <span class="yellow">Chỉ cần ấn Mua Ngay và chuyển đúng số tiền, mã giao dịch sẽ được xử lý nhanh chóng.</span>  
+        <br>
+        <span class="green">Liên hệ admin nếu gặp lỗi.</span>
+        <a href="https://www.facebook.com/profile.php?id=61561543393412" class="label-link" target="_blank">
+          <i class="fa-brands fa-facebook"></i> Tại Đây
+        </a>
+      </p>
+    </div>
+
+    <!-- Hiệu ứng nền động -->
+    <div class="background-animation"></div>
+
+    <!-- HEADER -->
+    <header>
+      <div class="top-bar">
+        <div class="logo">
+          <i class="fas fa-gamepad fa-2x"></i>
+          <h1> HUẤN HÀ </h1>
+        </div>
+        <nav class="nav-links">
+          <ul>
+            <!-- Nút Xem Lịch Sửa Mua Hàng -->
+            <li>
+              <button id="btnPurchaseHistory" class="nav-btn">
+                <i class="fas fa-calendar-alt"></i>
+              </button>
+            </li>
+            <!-- Hiển thị thông tin user -->
+            <li id="userInfo" class="nav-btn hidden">
+              <i class="fas fa-user"></i> <span id="userName"></span>
+            </li>
+            <li>
+              <button id="btnLogout" class="nav-btn hidden">
+                <i class="fas fa-sign-out-alt"></i>
+              </button>
+            </li>
+          </ul>
+        </nav>
+        </div>
+      </div>
+<!-- Thanh điều hướng -->
+  <div class="navbar">
+    <div class="menu-icon" onclick="toggleMenu()">
+      <i class="fa-solid fa-bars"></i> <!-- Icon 3 gạch -->
+    </div>
+  </div>
+    </header>
+    </header>
+
+    <!-- PHẦN ĐĂNG KÝ / ĐĂNG NHẬP -->
+    <section id="authSection" class="auth-section">
+      <!-- Form Đăng ký -->
+      <div id="signupForm" class="auth-form">
+        <h2>Đăng Ký</h2>
+        <div class="input-group">
+          <label for="signupEmail"><i class="fas fa-envelope"></i> Email</label>
+          <input type="email" id="signupEmail" placeholder="Nhập Email" />
+        </div>
+        <div class="input-group">
+          <label for="signupPassword"><i class="fas fa-lock"></i> Mật Khẩu</label>
+          <input type="password" id="signupPassword" placeholder="Nhập Mật Khẩu" />
+        </div>
+        <button id="btnSignUp" class="auth-btn">
+          <i class="fas fa-user-plus"></i> Đăng Ký
+        </button>
+        <p class="switch-text">
+          Đã có tài khoản?
+          <span id="switchToLogin" class="switch-link">Đăng Nhập</span>
+        </p>
+      </div>
+
+      <!-- Form Đăng nhập -->
+      <div id="loginForm" class="auth-form hidden">
+        <h2>Đăng Nhập</h2>
+        <div class="input-group">
+          <label for="loginEmail"><i class="fas fa-envelope"></i> Email</label>
+          <input type="email" id="loginEmail" placeholder="Nhập Email" />
+        </div>
+        <div class="input-group">
+          <label for="loginPassword"><i class="fas fa-lock"></i> Mật Khẩu</label>
+          <input type="password" id="loginPassword" placeholder="Nhập Mật Khẩu" />
+        </div>
+        <button id="btnLogin" class="auth-btn">
+          <i class="fas fa-sign-in-alt"></i> Đăng Nhập
+        </button>
+        <p class="switch-text">
+          Chưa có tài khoản?
+          <span id="switchToSignup" class="switch-link">Đăng Ký</span>
+        </p>
+      </div>
+
+      <!-- Thông báo lỗi/trạng thái -->
+      <div id="authMessage" class="auth-message"></div>
+    </section>
+
+    <!-- PHẦN SHOP (sau khi đăng nhập thành công) -->
+    <section id="shopSection" class="shop-section hidden">
+ <div class="notification-box">
+    <div class="notification-title">
+      <i class="fa-solid fa-star"></i> Welcome <span class="blue">SHOPHUANHA.XYZ</span> <i class="fa-solid fa-star"></i>
+    </div>
+    
+    <div class="notification-text">
+      <span class="orange"><u>Lưu Ý Khi Mua</u></span>
+    </div>
+
+    <div class="notification-text">
+      Nhóm Hỗ Trợ: <a href="https://t.me/huanhasuport" class="notification-link blue">Nhấn Vào Đây</a>
+    </div>
+
+    <div class="notification-text">
+      Nạp Tiền: <a href="#" class="notification-link red">Thẻ Cào</a> - <a href="#" class="notification-link orange">Bank ATM</a>
+    </div>
+  </div>
+      <!-- Marquee chữ chạy -->
+      <div class="marquee-container">
+        <span id="marquee-text"></span>
+      </div>
+
+      <!-- DANH MỤC FREE FIRE -->
+      <div class="product-section">
+        <h2>ĐỒ CHƠI FREE FIRE</h2>
+        <div class="yellow-bar"></div>
+        <div class="product-grid">
+          <div class="product-card">
+            <img src="https://minhtuanmobile.com/uploads/blog/code-free-fire-moi-nhat-thang-7-2024-240713094007.jpg" alt="Free Fire 1" />
+            <h4>AIMLOCK FREE FIRE | ANTIBAND 100% | KÉO NHẸ FULL ĐỎ 💥 | <span style="color: red;">100.000₫</span></h4>
+            <!-- Thêm thuộc tính data-download -->
+            <button class="btn-play" data-product="Aimlock100k" data-download="https://www.mediafire.com/file/mrsflrfd28oxlpi/avatar.JPG/file">
+              <i class="fas fa-shopping-cart"></i> Mua Ngay
+            </button>
+          </div>
+          <div class="product-card">
+            <img src="https://minhtuanmobile.com/uploads/blog/code-free-fire-moi-nhat-thang-7-2024-240713094007.jpg" alt="Free Fire 2" />
+            <h4>AIM ANTIBADN HỖ TRỢ KÉO TÂM | FULL ĐỎ NHẠY TÂM | GHIM ĐẦU | <span style="color: red;">200.000₫</span></h4>
+            <button class="btn-play" data-product="AimantibandV1" data-download="https://www.mediafire.com/file/87n1a5h6udixx3y/Game.ico/file">
+              <i class="fas fa-shopping-cart"></i> Mua Ngay
+            </button>
+          </div>
+          <div class="product-card">
+            <img src="https://minhtuanmobile.com/uploads/blog/code-free-fire-moi-nhat-thang-7-2024-240713094007.jpg" alt="Free Fire 3" />
+            <h4>AIM KÉO NHẸ FULL ĐỎ | HỖ TRỢ TẤT CẢ DÒNG MÁY | <span style="color: red;">350.000₫</span></h4>
+            <button class="btn-play" data-product="AimVipSuper2" data-download="https://example.com/downloads/aimvipsuper2.zip">
+              <i class="fas fa-shopping-cart"></i> Mua Ngay
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DANH MỤC KHÁC -->
+      <div class="product-section">
+        <h3>DANH MỤC KHÁC</h3>
+        <div class="yellow-bar"></div>
+        <div class="product-grid">
+          <div class="product-card">
+            <img src="https://minhtuanmobile.com/uploads/blog/code-free-fire-moi-nhat-thang-7-2024-240713094007.jpg" alt="Other 1" />
+            <h4>AIMBOT FREE FIRE ANTIBAND RANK ALL MAP | <span style="color: red;">400.000₫</span></h4>
+            <button class="btn-play" data-product="AimVipOther" data-download="https://example.com/downloads/aimvipother.zip">
+              <i class="fas fa-shopping-cart"></i> Chơi Ngay
+            </button>
+          </div>
+          <div class="product-card">
+            <img src="https://minhtuanmobile.com/uploads/blog/code-free-fire-moi-nhat-thang-7-2024-240713094007.jpg" alt="Other 2" />
+            <h4>AIMNECK VIP ALL MAP RANK WORKING AOTU VIP | <span style="color: red;">550.000₫</span></h4>
+            <button class="btn-play" data-product="AIMNECKVIPBOT" data-download="https://example.com/downloads/aimneckvipbot.zip">
+              <i class="fas fa-shopping-cart"></i> Mua Ngay
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN THÔNG BÁO THANH TOÁN (Modal) -->
+    <div id="paymentNotification" class="payment-notification hidden">
+      <div class="payment-content">
+        <h3>Thanh Toán</h3>
+        <p id="paymentMessage"></p>
+        <!-- Nút Download sẽ xuất hiện sau khi giao dịch thành công -->
+        <a id="downloadBtn" class="download-btn hidden" target="_blank">
+          <i class="fa-solid fa-download"></i> Download
+        </a>
+        <button id="closePaymentNotification" class="close-btn hidden">
+          <i class="fas fa-times"></i> Đóng
+        </button>
+      </div>
+    </div>
+
+    <!-- PHẦN LỊCH SỬ MUA HÀNG (Modal) -->
+    <div id="purchaseHistoryModal" class="purchase-history-modal hidden">
+      <div class="purchase-history-content">
+        <h3>Lịch Sử Mua Hàng</h3>
+        <div id="purchaseHistoryList"></div>
+        <button id="closePurchaseHistory" class="close-btn">
+          <i class="fas fa-times"></i> Đóng
+        </button>
+      </div>
+    </div>
+
+    <!-- PHẦN THÔNG BÁO (Notification) -->
+    <div id="notificationContainer"></div>
+    
+    <!-- PHẦN LIÊN HỆ -->
+    <section id="contact" class="contact">
+      <div class="contact-container">
+        <h2>Liên Hệ Với Chúng Tôi</h2>
+        <p>Nhấp vào các liên kết bên dưới:</p>
+        <div class="contact-buttons">
+          <a href="https://www.facebook.com/profile.php?id=61561543393412" target="_blank" class="contact-btn facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://www.instagram.com" target="_blank" class="contact-btn instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://www.twitter.com" target="_blank" class="contact-btn twitter">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="mailto:example@example.com" target="_blank" class="contact-btn email">
+            <i class="fas fa-envelope"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>© SHOP HUẤN HÀ VN - TRÙM UY TÍN</p>
+    </footer>
+
+    <!-- File JS -->
+    <script src="script.js"></script>
+  </body>
+</html>
