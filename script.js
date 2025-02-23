@@ -39,7 +39,7 @@ function getIcon(type) {
  * Hiệu ứng Marquee cho chữ chạy
  ***********************************************************/
 const marqueeTextElement = document.getElementById("marquee-text");
-const marqueeTextContent = "Liên Hệ Gửi Email Của Bạn Và Phản Hồi Cho Chúng Tôi Biết ";
+const marqueeTextContent = "Shop Huấn Hà Uy Tín Số 1 Việt Nam ";
 let marqueeIndex = 0;
 function typeMarquee() {
   marqueeTextElement.innerText = marqueeTextContent.substring(0, marqueeIndex);
