@@ -51,15 +51,46 @@
     </script>
   </head>
   <body>
+<!-- Container thông báo sử dụng id "thongbao" với class "thongbao-congainer" -->
+    <div id="thongbao" class="thongbao-congainer hidden">
+      <div class="thongbaoweb-box">
+        <div class="thongbaoweb-header">
+          <h3>Welcome Chào Mừng Bạn Đến Với Huấn Hà💥</h3>
+          <button class="thongbaoweb-close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="thongbaoweb-body">
+          <p>
+            Shop Huấn Hà Uy Tín Chất Lượng số 1 Việt Nam , Hỗ Trợ Nhiệt Tình Xử Lí Nhanh Chóng | Cung Cấp Đồ Chơi Full Đỏ Siêu Bá
+          </p>
+          <div class="thongbaoweb-links">
+            <a href="https://t.me/suporthuanha" target="_blank" class="thongbaoweb-link">
+              <i class="fa-solid fa-headset"></i> Hỗ Trợ
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61561543393412" target="_blank" class="thongbaoweb-link">
+              <i class="fa-brands fa-facebook"></i> Faceboock
+            </a>
+            <a href="https://t.me/huanhasuport" target="_blank" class="thongbaoweb-link">
+              <i class="fa-brands fa-telegram"></i> Telegram
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Menu Sidebar (ẩn) -->
     <div class="sidebar" id="sidebar">
       <span class="dong-btn" onclick="toggleMenu()">
         <i class="fa-solid fa-xmark"></i>
       </span>
-      <a href="#"><i class="fa-solid fa-landmark"></i> Nạp Tiền</a>
+      <a href="#">
+      <i class="fa-solid fa-landmark"></i> Nạp Tiền
+</a>
       <a href="#" onclick="openWarning()"><i class="fa-solid fa-triangle-exclamation"></i> Lưu Ý Khi Mua</a>
-    </div>
-
+<!-- Nút Hỗ Trợ -->
+  <a href="https://www.facebook.com/profile.php?id=61561543393412" class="support-btn" target="_blank">
+    <i class="fa-solid fa-headset"></i> Hỗ Trợ    
+</div>
     <!-- Modal Cảnh Báo (Lưu Ý Khi Mua) -->
     <div class="warning-box" id="warningBox">
       <span class="close-warning" onclick="closeWarning()">
@@ -260,8 +291,20 @@
           </div>
         </div>
       </div>
+<div class="product-section">
+ <h3>DANH MỤC CODER VIP</h3>
+        <div class="yellow-bar"></div>
+<div class="product-grid">
+          <div class="product-card">
+            <img src="https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/anh-ff-1.jpg" alt="Other 1" />
+            <h4>CODER VIP , TẠO VÀ SỬ DỤNG MỌI THIẾT BỊ , HỖ TRỢ CHIẾN FREE FIRE | <span style="color: red;">500.000₫</span></h4>
+            <button class="btn-play" data-product="MANGUONCODEBA500" data-download="https://www.mediafire.com/file/ldfrjav752rnssz/CODER+&+CÁCH+CREETE.zip/file">
+              <i class="fas fa-shopping-cart"></i> Mua Ngay
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
-
     <!-- PHẦN THÔNG BÁO THANH TOÁN (Modal) -->
     <div id="paymentNotification" class="payment-notification hidden">
       <div class="payment-content">

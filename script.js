@@ -303,4 +303,26 @@ function toggleMenu() {
     function closeWarning() {
       document.getElementById("warningBox").style.display = "none";
     }
-  
+  // thông báo 
+
+      // Hiển thị thông báo tự động khi trang được tải
+document.addEventListener("DOMContentLoaded", function () {
+  var notif = document.getElementById("thongbao");
+  // Hiển thị thông báo sau 500ms với hiệu ứng fade in
+  setTimeout(function () {
+    notif.classList.remove("hidden");
+    // Buộc trình duyệt render lại để transition hoạt động
+    void notif.offsetWidth;
+    notif.classList.add("show");
+  }, 500);
+
+  // Xử lý nút đóng thông báo
+  var closeBtn = notif.querySelector(".thongbaoweb-close");
+  closeBtn.addEventListener("click", function () {
+    notif.classList.remove("show");
+    // Sau hiệu ứng fade-out, ẩn hoàn toàn phần tử sau 500ms
+    setTimeout(function () {
+      notif.classList.add("hidden");
+    }, 500);
+  });
+});
