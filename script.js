@@ -326,3 +326,113 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 500);
   });
 });
+
+// đánh giá 5* 
+document.addEventListener('DOMContentLoaded', function() {
+  // --- Xử lý chọn số sao ---
+  var stars = document.querySelectorAll('.rating .star');
+  var selectedRating = 0;
+  
+  stars.forEach(function(star) {
+    star.addEventListener('click', function() {
+      selectedRating = this.getAttribute('data-value');
+      updateStarSelection(selectedRating);
+    });
+    star.addEventListener('mouseover', function() {
+      var hoverValue = this.getAttribute('data-value');
+      updateStarHover(hoverValue);
+    });
+    star.addEventListener('mouseout', function() {
+      updateStarSelection(selectedRating);
+    });
+  });
+  
+  function updateStarSelection(rating) {
+    stars.forEach(function(star) {
+      if (star.getAttribute('data-value') <= rating) {
+        star.classList.add('selected');
+      } else {
+        star.classList.remove('selected');
+      }
+    });
+  }
+  
+  function updateStarHover(hoverValue) {
+    stars.forEach(function(star) {
+      if (star.getAttribute('data-value') <= hoverValue) {
+        star.classList.add('hovered');
+      } else {
+        star.classList.remove('hovered');
+      }
+    });
+  }
+  
+  // --- Xử lý gửi đánh giá lên Firebase ---
+  var reviewForm = document.getElementById('reviewForm');
+  var reviewList = document.getElementById('reviewList');
+  
+  reviewForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var reviewText = document.getElementById('reviewText').value;
+    // Lấy email người dùng từ Firebase Auth nếu đã đăng nhập, nếu không thì hiển thị "Khách vãng lai"
+    var user = firebase.auth().currentUser;
+    var email = user ? user.email : "Khách vãng lai";
+    
+    // Tạo đối tượng đánh giá
+    var reviewObj = {
+      email: email,
+      rating: selectedRating,
+      text: reviewText,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    };
+    
+    // Lưu vào Firebase (nút 'reviews')
+    firebase.database().ref('reviews').push(reviewObj)
+      .then(function() {
+        // Xóa form sau khi gửi
+        reviewForm.reset();
+        selectedRating = 0;
+        updateStarSelection(0);
+      })
+      .catch(function(error) {
+        console.error('Lỗi gửi đánh giá:', error);
+      });
+  });
+  
+  // --- Hàm hiển thị đánh giá ---
+  // Hàm hiển thị đánh giá (bình luận) với ngày gửi
+function displayReview(reviewId, reviewData) {
+  var div = document.createElement('div');
+  div.classList.add('review-item');
+
+  // Tạo HTML hiển thị số sao
+  var ratingHTML = '';
+  for (var i = 1; i <= reviewData.rating; i++) {
+    ratingHTML += '<i class="fa-solid fa-star"></i>';
+  }
+  for (var i = reviewData.rating; i < 5; i++) {
+    ratingHTML += '<i class="fa-regular fa-star"></i>';
+  }
+
+  // Chuyển đổi timestamp thành định dạng ngày giờ dễ đọc
+  var date = new Date(reviewData.timestamp);
+  var formattedDate = date.toLocaleString(); // Bạn có thể thay đổi định dạng nếu cần
+
+  // Hiển thị email, ngày gửi, đánh giá sao và nội dung bình luận
+  div.innerHTML = `
+    <div class="review-header">
+      <div class="review-email">${reviewData.email}</div>
+      <div class="review-date">${formattedDate}</div>
+    </div>
+    <div class="review-rating">${ratingHTML}</div>
+    <div class="review-text">${reviewData.text}</div>
+  `;
+
+  reviewList.appendChild(div);
+}
+// --- Lắng nghe đánh giá mới từ Firebase ---
+  firebase.database().ref('reviews').on('child_added', function(snapshot) {
+    var reviewData = snapshot.val();
+    displayReview(snapshot.key, reviewData);
+  });
+});

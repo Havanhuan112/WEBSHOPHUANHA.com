@@ -669,4 +669,133 @@ footer {
 .thongbaoweb-link:hover {
   color: #0056b3;
 }
-// icon đổi màu vip
+// đánh giá 5* cho bố
+/* Phần đánh giá & bình luận */
+.review-section {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin: 20px auto;
+  background: #f9f9f9;
+  border-radius: 5px;
+  max-width: 600px;
+}
+
+.review-section h2 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+}
+
+.rating {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.rating .star {
+  font-size: 28px;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.2s ease;
+}
+
+.rating .star.selected,
+.rating .star.hovered {
+  color: gold;
+}
+
+#reviewText {
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px;
+  margin-bottom: 10px;
+  resize: vertical;
+  font-size: 16px;
+}
+
+#reviewForm button {
+  background: #ff6600;
+  border: none;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  font-size: 16px;
+}
+
+/* Khung chứa danh sách đánh giá, cho phép cuộn nếu có quá nhiều bình luận */
+.review-list {
+  margin-top: 20px;
+  max-height: 300px;      
+  overflow-y: auto;       
+  padding-right: 10px;    
+  border-top: 1px solid #ddd;
+}
+
+.review-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background: #fff;
+}
+
+/* Header hiển thị email và ngày gửi, căn đều hai bên */
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.review-email {
+  font-weight: bold;
+  color: #333;
+}
+
+.review-date {
+  font-size: 14px;
+  color: #999;
+}
+
+/* Các phần khác vẫn giữ nguyên */
+.review-rating {
+  margin: 5px 0;
+}
+
+.review-rating i {
+  color: gold;
+  margin-right: 2px;
+}
+
+.review-text {
+  margin-top: 5px;
+  font-size: 16px;
+  color: #555;
+}
+
+.review-item .review-email {
+  font-weight: bold;
+  color: #333;
+}
+
+.review-item .review-rating {
+  margin: 5px 0;
+}
+
+.review-item .review-rating i {
+  color: gold;
+  margin-right: 2px;
+}
+
+.review-item .review-text {
+  margin-top: 5px;
+  font-size: 16px;
+  color: #555;
+}
