@@ -436,3 +436,181 @@ function displayReview(reviewId, reviewData) {
     displayReview(snapshot.key, reviewData);
   });
 });
+
+// chat ônine với huấn hà 
+
+document.addEventListener("DOMContentLoaded", function () {
+  // --- Các phần tử liên quan đến chat ---
+  const chatButton = document.getElementById("chatButton");
+  const chatPanel = document.getElementById("chatPanel");
+  const chatCloseButton = document.getElementById("chatCloseButton");
+  const chatSearch = document.getElementById("chatSearch");
+  const chatUserList = document.getElementById("chatUserList");
+  const chatConversation = document.getElementById("chatConversation");
+  const chatMessages = document.getElementById("chatMessages");
+  const chatMessageInput = document.getElementById("chatMessageInput");
+  const chatSendButton = document.getElementById("chatSendButton");
+  const chatWithHeader = document.getElementById("chatWith");
+
+  let currentConversationId = null;
+  let currentChatPartner = null; // Thông tin của người chat đối phương
+
+  // --- Hiển thị ẩn/hiện panel chat ---
+  chatButton.addEventListener("click", function () {
+    chatPanel.classList.toggle("hidden");
+    if (!chatPanel.classList.contains("hidden")) {
+      loadUserList();
+    }
+  });
+
+  // Đóng panel chat
+  // (Bạn có thể thêm nút đóng bên header panel đã có)
+  // Nếu dùng nút "chatCloseButton", đảm bảo phần tử có id này trong HTML
+
+  // --- Tải danh sách người dùng từ Firebase (node "users") ---
+  function loadUserList() {
+    chatUserList.innerHTML = "";
+    firebase.database().ref("users").once("value", function (snapshot) {
+      snapshot.forEach(function (childSnapshot) {
+        const userData = childSnapshot.val();
+        const userId = childSnapshot.key;
+        const currentUser = firebase.auth().currentUser;
+        if (currentUser && currentUser.uid === userId) return; // Bỏ qua chính người dùng hiện tại
+        // Tạo phần tử cho từng người dùng
+        const userDiv = document.createElement("div");
+        userDiv.classList.add("chat-user");
+        userDiv.textContent = userData.email;
+        userDiv.dataset.uid = userId;
+        userDiv.dataset.email = userData.email;
+        // Khi nhấp vào người dùng, gửi yêu cầu chat
+        userDiv.addEventListener("click", function () {
+          sendChatRequest(userId, userData.email);
+        });
+        chatUserList.appendChild(userDiv);
+      });
+    });
+  }
+
+  // --- Tìm kiếm danh sách người dùng theo email ---
+  chatSearch.addEventListener("input", function () {
+    const filter = chatSearch.value.toLowerCase();
+    const users = chatUserList.getElementsByClassName("chat-user");
+    Array.from(users).forEach(function (userElem) {
+      const email = userElem.dataset.email.toLowerCase();
+      userElem.style.display = email.includes(filter) ? "block" : "none";
+    });
+  });
+
+  // --- Gửi yêu cầu chat ---
+  function sendChatRequest(targetUid, targetEmail) {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+      alert("Bạn cần đăng nhập để chat online.");
+      return;
+    }
+    const request = {
+      sender: currentUser.uid,
+      receiver: targetUid,
+      timestamp: firebase.database.ServerValue.TIMESTAMP,
+      status: "pending"
+    };
+    firebase.database().ref("chatRequests").push(request)
+      .then(() => {
+        alert("Yêu cầu chat đã được gửi tới " + targetEmail);
+      })
+      .catch((error) => {
+        console.error("Lỗi gửi yêu cầu chat:", error);
+      });
+  }
+
+  // --- Lắng nghe yêu cầu chat đến cho người dùng hiện tại ---
+  firebase.database().ref("chatRequests").on("child_added", function (snapshot) {
+    const request = snapshot.val();
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser && request.receiver === currentUser.uid && request.status === "pending") {
+      // Lấy thông tin người gửi để hiển thị
+      firebase.database().ref("users/" + request.sender).once("value", function (snap) {
+        const senderData = snap.val();
+        const senderEmail = senderData.email;
+        if (confirm("Yêu cầu chat từ " + senderEmail + ". Bạn có chấp nhận?")) {
+          // Cập nhật trạng thái yêu cầu thành "accepted"
+          snapshot.ref.update({ status: "accepted" });
+          openChatConversation(request.sender, senderEmail);
+        } else {
+          snapshot.ref.update({ status: "declined" });
+        }
+      });
+    }
+  });
+
+  // --- Lắng nghe thay đổi yêu cầu chat (đối với yêu cầu mà current user gửi đi) ---
+  firebase.database().ref("chatRequests").on("child_changed", function (snapshot) {
+    const request = snapshot.val();
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser && request.sender === currentUser.uid && request.status === "accepted") {
+      firebase.database().ref("users/" + request.receiver).once("value", function (snap) {
+        const receiverData = snap.val();
+        openChatConversation(request.receiver, receiverData.email);
+      });
+    }
+  });
+
+  // --- Mở cuộc trò chuyện chat ---
+  function openChatConversation(partnerUid, partnerEmail) {
+    currentChatPartner = { uid: partnerUid, email: partnerEmail };
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) return;
+    // Tạo conversation id bằng cách sắp xếp 2 uid
+    let uids = [currentUser.uid, partnerUid];
+    uids.sort();
+    currentConversationId = uids.join("_");
+
+    chatWithHeader.textContent = "Chat với: " + partnerEmail;
+    chatConversation.classList.remove("hidden");
+    chatMessages.innerHTML = "";
+
+    // Lắng nghe tin nhắn của cuộc trò chuyện
+    firebase.database().ref("chats/" + currentConversationId).on("child_added", function (snapshot) {
+      const messageData = snapshot.val();
+      displayChatMessage(messageData);
+    });
+  }
+
+  // --- Hiển thị tin nhắn chat ---
+  function displayChatMessage(messageData) {
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("chat-message");
+    msgDiv.innerHTML = `<strong>${messageData.senderEmail}:</strong> ${messageData.message}`;
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // --- Gửi tin nhắn chat ---
+  chatSendButton.addEventListener("click", function () {
+    const msg = chatMessageInput.value.trim();
+    if (msg === "" || !currentConversationId) return;
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) return;
+    const messageObj = {
+      sender: currentUser.uid,
+      senderEmail: currentUser.email,
+      message: msg,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    };
+    firebase.database().ref("chats/" + currentConversationId).push(messageObj)
+      .then(() => {
+        chatMessageInput.value = "";
+      })
+      .catch((error) => {
+        console.error("Lỗi gửi tin nhắn:", error);
+      });
+  });
+
+  // Cho phép gửi tin nhắn khi nhấn Enter
+  chatMessageInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      chatSendButton.click();
+    }
+  });
+});
