@@ -382,7 +382,7 @@ header {
 /* PHẦN LIÊN HỆ */
 .contact {
   padding: 30px 20px;
-  background: linear-gradient(135deg, #f06, #f79);
+  background: linear-gradient(-45deg, #000, #222, #444, #111);
   text-align: center;
   color: #fff;
 }
@@ -672,7 +672,7 @@ footer {
 // đánh giá 5* cho bố
 /* Phần đánh giá & bình luận */
 .review-section {
-  border: 1px solid #ddd;
+  border: 1px solid #fff;
   padding: 15px;
   margin: 20px auto;
   background: #f9f9f9;
@@ -802,3 +802,88 @@ footer {
 
 // ảnh đẹp bố ne content
     // xhats admin
+/* Ẩn phần tử */
+.acc-hidden {
+  display: none;
+}
+
+
+/* Modal chứa thông tin tài khoản */
+.account-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.account-modal.show {
+  opacity: 1;
+}
+.account-modal.acc-hidden {
+  display: none;
+}
+
+/* Nội dung modal */
+.acc-modal-content {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 10px;
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.acc-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+}
+.acc-modal-content h3 {
+  margin-top: 0;
+  text-align: center;
+  color: #333;
+}
+.acc-modal-content p {
+  font-size: 16px;
+  margin: 10px 0;
+  color: #555;
+}
+// cuộn trang wbe
+    /* Container cho hình ảnh dạng tròn */
+/* Container cho ảnh hình tròn với nền trắng */
+.round-image-container {
+  width: 15px;               
+  height: 15px;
+  margin: 8px auto;          
+  border-radius: 50%;         
+  overflow: hidden;           
+  border: 2px solid #ddd;     
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  
+  /* Đặt nền trắng để khi nhân màu, ảnh giữ nguyên màu gốc */
+  background: #fff;
+  /* isolation giúp mix-blend-mode hoạt động độc lập */
+  isolation: isolate;
+}
+
+/* Định dạng cho ảnh bên trong container */
+.round-image-container img {
+  width: 15%;
+  height: 15%;
+  object-fit: cover;
+  
+  
+}
+// gửi bill

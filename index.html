@@ -34,6 +34,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
     
     <script>
       // Cấu hình Firebase
@@ -90,7 +91,25 @@
 <!-- Nút Hỗ Trợ -->
   <a href="https://www.facebook.com/profile.php?id=61561543393412" class="support-btn" target="_blank">
     <i class="fa-solid fa-headset"></i> Hỗ Trợ    
+<!-- Header chứa tiêu đề và icon thông tin tài khoản -->
+    
+      <a><div id="accountInfoIcon" class="account-info-icon">
+        <i class="fa-solid fa-info-circle"></i>Thông Tin
+      </div>
+</a>
 </div>
+<!-- Modal hiển thị thông tin tài khoản -->
+    <div id="accountInfoModal" class="account-modal acc-hidden">
+      <div class="acc-modal-content">
+        <button id="accountInfoClose" class="acc-close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <h3>Thông tin tài khoản</h3>
+        <p>Email: <span id="accountEmailDisplay"></span></p>
+        <p>Mật khẩu: <span id="accountPasswordDisplay"></span></p>
+        <p>Ngày đăng ký: <span id="accountRegisterTime"></span></p>
+      </div>
+    </div>
     <!-- Modal Cảnh Báo (Lưu Ý Khi Mua) -->
     <div class="warning-box" id="warningBox">
       <span class="close-warning" onclick="closeWarning()">
@@ -117,7 +136,12 @@
     <header>
       <div class="top-bar">
         <div class="logo">
-          <i class="fas fa-gamepad fa-2x"></i>
+          <!-- Thanh điều hướng -->
+  <div class="navbar">
+    <div class="menu-icon" onclick="toggleMenu()">
+      <i class="fa-solid fa-bars"></i> <!-- Icon 3 gạch -->
+    </div>
+  </div>
           <h1> HUẤN HÀ </h1>
         </div>
         <nav class="nav-links">
@@ -141,12 +165,6 @@
         </nav>
         </div>
       </div>
-<!-- Thanh điều hướng -->
-  <div class="navbar">
-    <div class="menu-icon" onclick="toggleMenu()">
-      <i class="fa-solid fa-bars"></i> <!-- Icon 3 gạch -->
-    </div>
-  </div>
     </header>
     </header>
 
@@ -200,9 +218,14 @@
     <section id="shopSection" class="shop-section hidden">
  <div class="notification-box">
     <div class="notification-title">
-      <i class="fa-solid fa-star"></i> Welcome <span class="blue">SHOPHUANHA.XYZ</span> <i class="fa-solid fa-star"></i>
+      <i class="fa-solid fa-star"></i> Welcome <span class="blue">SHOPHUANHA</span>
+<i class="fa-solid fa-star"></i>
     </div>
-    
+  <!-- Container hình ảnh tròn -->
+  <div class="round-image-container">
+    <!-- Thay đường dẫn src bằng hình ảnh có nền trắng -->
+    <img src="https://research.mgu.ac.in/wp-content/uploads/2021/07/new-icon-gif-9.gif" alt="Hình Ảnh Không Nền Trắng">
+    </div>
     <div class="notification-text">
       <span class="orange"><u>Lưu Ý Khi Mua</u></span>
     </div>
@@ -237,7 +260,7 @@
             <img src="https://minhtuanmobile.com/uploads/blog/code-free-fire-moi-nhat-thang-7-2024-240713094007.jpg" alt="Free Fire 2" />
             <h4>AIM ANTIBADN HỖ TRỢ KÉO TÂM | FULL ĐỎ NHẠY TÂM | GHIM ĐẦU | <span style="color: red;">200.000₫</span></h4>
             <button class="btn-play" data-product="Aim200" data-download="https://fnote.org/notes/wXWG3d">
-              <i class="fas fa-shopping-cart"></i> Mua Ngay
+              <i class="fas fa-shopping-cart"></i>Mua Ngay
             </button>
           </div>
           <div class="product-card">
@@ -323,7 +346,8 @@
       </div>
 <!-- Nút Chat Online (hiển thị ở góc dưới bên phải) -->
 <!-- Nút Chat Support (dành cho người dùng) -->
-    
+     
+
     </section>
     <!-- PHẦN THÔNG BÁO THANH TOÁN (Modal) -->
     <div id="paymentNotification" class="payment-notification hidden">
@@ -369,7 +393,7 @@
           <a href="https://www.twitter.com" target="_blank" class="contact-btn twitter">
             <i class="fab fa-twitter"></i>
           </a>
-          <a href="mailto:example@example.com" target="_blank" class="contact-btn email">
+          <a href="vanhuanha56@gmail.com" target="_blank" class="contact-btn email">
             <i class="fas fa-envelope"></i>
           </a>
         </div>

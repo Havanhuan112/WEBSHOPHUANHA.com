@@ -438,3 +438,46 @@ function displayReview(reviewId, reviewData) {
 });
 
 // chat  với huấn hà 
+ // thông báo
+document.addEventListener("DOMContentLoaded", function () {
+  const accountInfoIcon = document.getElementById("accountInfoIcon");
+  const accountInfoModal = document.getElementById("accountInfoModal");
+  const accountInfoClose = document.getElementById("accountInfoClose");
+  const accountEmailDisplay = document.getElementById("accountEmailDisplay");
+  const accountPasswordDisplay = document.getElementById("accountPasswordDisplay");
+  const accountRegisterTime = document.getElementById("accountRegisterTime");
+
+  // Hàm mở modal và hiển thị thông tin tài khoản từ Firebase
+  function openAccountInfoModal() {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+      alert("Bạn cần đăng nhập để xem thông tin tài khoản.");
+      return;
+    }
+    // Lấy dữ liệu người dùng từ Firebase (giả sử dữ liệu được lưu tại node "users/{uid}" với các trường email, password, registerTime)
+    firebase.database().ref("users/" + currentUser.uid).on("value", function (snapshot) {
+      const userData = snapshot.val();
+      if (userData) {
+        accountEmailDisplay.textContent = userData.email;
+        accountPasswordDisplay.textContent = userData.password; // Lưu ý: chỉ sử dụng cho demo; không nên lưu mật khẩu dưới dạng plaintext
+        // Chuyển đổi timestamp thành định dạng ngày tháng năm dễ đọc
+        const regTime = new Date(userData.registerTime);
+        accountRegisterTime.textContent = regTime.toLocaleString(); // hoặc regTime.toLocaleDateString() cho chỉ ngày tháng năm
+      }
+    });
+    accountInfoModal.classList.remove("acc-hidden");
+    // Buộc trình duyệt render lại để hiệu ứng transition hoạt động
+    void accountInfoModal.offsetWidth;
+    accountInfoModal.classList.add("show");
+  }
+
+  accountInfoIcon.addEventListener("click", openAccountInfoModal);
+
+  accountInfoClose.addEventListener("click", function () {
+    accountInfoModal.classList.remove("show");
+    setTimeout(function () {
+      accountInfoModal.classList.add("acc-hidden");
+    }, 300);
+  });
+});
+// cuộn trang web
