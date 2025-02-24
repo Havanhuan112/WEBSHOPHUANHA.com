@@ -197,8 +197,8 @@ header {
 
 /* Thanh ngang màu vàng */
 .yellow-bar {
-  width: 100%;
-  height: 4px;
+  width: 380px;
+  height: 2px;
   background-color: yellow;
   margin: 10px 0 20px;
 }
