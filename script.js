@@ -205,7 +205,7 @@ function showPaymentNotification(productId) {
   messageP.innerHTML = `Vui lòng chuyển khoản đến:<br/>
     <strong>Ngân hàng Mbbank</strong><br/>
     Số tài khoản: <strong>0325575642</strong><br/>
-    Nội dung chuyển khoản: <strong>Thanh toán ${productId}</strong><br/>
+    Nội dung chuyển khoản: <strong>${productId}</strong><br/>
     Email: <strong>${firebase.auth().currentUser.email}</strong><br/>
     <i class="fas fa-spinner fa-spin"></i> Đang xử lý...`;
   document.getElementById('closePaymentNotification').classList.add('hidden');
