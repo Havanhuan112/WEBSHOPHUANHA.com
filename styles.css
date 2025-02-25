@@ -581,94 +581,8 @@ footer {
     .yellow { color: yellow; }
     .green { color: lime; }
 // thông báo  huấn hà 
-/* Ẩn phần tử khi không cần hiển thị */
-/* Ẩn phần tử */
-.hidden {
-  display: none;
-}
-
-/* Container thông báo (đã đổi tên thành thongbao-congainer) */
- /* Container thông báo (đã đổi tên thành thongbao-congainer) */
-/* Ẩn phần tử */
-.hidden {
-  display: none;
-}
-
-.thongbao-congainer {
-  position: fixed;
-  top: 49%;
-  left: 50%;
-  transform: translate(-49%, -50%);
-  z-index: 10000;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  width: 90%;
-  max-width: 400px;
-  height: auto;
-}
-
-/* Khi hiển thị */
-.thongbao-congainer.show {
-  opacity: 1;
-}
-
-/* Hộp thông báo */
-.thongbaoweb-box {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(8px);
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 20px 25px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Header thông báo */
-.thongbaoweb-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.thongbaoweb-header h3 {
-  font-size: 20px;
-  margin: 0;
-  color: #333;
-}
-.thongbaoweb-close {
-  background: none;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
-  color: #333;
-}
-
-/* Nội dung thông báo */
-.thongbaoweb-body p {
-  margin: 15px 0;
-  font-size: 16px;
-  line-height: 1.4;
-  color: #555;
-}
-
-/* Các nút liên kết trong thông báo */
-.thongbaoweb-links {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 10px;
-}
-.thongbaoweb-link {
-  text-decoration: none;
-  color: #007bff;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: color 0.3s ease;
-}
-.thongbaoweb-link:hover {
-  color: #0056b3;
-}
+    
+  
 // đánh giá 5* cho bố
 /* Phần đánh giá & bình luận */
 .review-section {
@@ -887,3 +801,165 @@ footer {
   
 }
 // gửi bill
+    /* Style cho nút đăng nhập */
+    #dangnhap1 {
+      background-color: none;
+      color: none;
+      border: 1px solid #ddd;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+      transition: background-color 0.3s;
+    }
+    #dangnhap1:hover {
+      background-color: #f7f7f7;
+    }
+ // Thông Báo Nâng Cấp 
+
+     /* Icon thông báo với hiệu ứng lắc tự động */
+    .notification-icon {
+      position: relative;
+      background: none;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-size: 28px;
+      color: #333;
+      animation: shake 2s infinite;
+    }
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(2px, -2px); }
+      50% { transform: translate(-2px, 2px); }
+      75% { transform: translate(2px, 2px); }
+      100% { transform: translate(0, 0); }
+    }
+    .notification-icon .badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: red;
+      color: #fff;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+    /* Panel thông báo: id và class đổi thành hienthitudong, hiển thị ở giữa */
+    .hienthitudong {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      background: #fff;
+      width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 100;
+      padding: 15px;
+      display: none;
+    }
+    .hienthitudong.show {
+      display: block;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .hienthitudong .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .hienthitudong .header h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #333;
+    }
+    .hienthitudong .close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #333;
+      transition: color 0.3s ease;
+    }
+    .hienthitudong .close-btn:hover {
+      color: #999;
+    }
+    .hienthitudong ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .hienthitudong ul li {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+      color: #555;
+    }
+    .hienthitudong ul li:last-child {
+      border-bottom: none;
+    }
+
+    // nạp tiền 
+
+/* Overlay bao phủ toàn bộ trang */
+    /* Overlay bao phủ toàn bộ trang */
+.hidden {
+  display: none;
+}
+    #notification-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.5);  /* Nền mờ */
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    
+    /* Hiệu ứng ẩn overlay khi thêm class .hide */
+    #notification-overlay.hide {
+      opacity: 0;
+      transform: scale(0.8);
+      pointer-events: none;
+    }
+    
+    /* Hộp thông báo */
+    #notification-box {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 2px;
+      position: relative;
+      text-align: center;
+      max-width: 90%;
+      box-sizing: border-box;
+    }
+    
+    /* Nút tắt (close) */
+    #notification-box .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #888;
+    }
+    #notification-box .close-btn:hover {
+      color: #333;
+    }
+     

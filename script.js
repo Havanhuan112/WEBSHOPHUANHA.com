@@ -306,26 +306,6 @@ function toggleMenu() {
   // thông báo 
 
       // Hiển thị thông báo tự động khi trang được tải
-document.addEventListener("DOMContentLoaded", function () {
-  var notif = document.getElementById("thongbao");
-  // Hiển thị thông báo sau 500ms với hiệu ứng fade in
-  setTimeout(function () {
-    notif.classList.remove("hidden");
-    // Buộc trình duyệt render lại để transition hoạt động
-    void notif.offsetWidth;
-    notif.classList.add("show");
-  }, 500);
-
-  // Xử lý nút đóng thông báo
-  var closeBtn = notif.querySelector(".thongbaoweb-close");
-  closeBtn.addEventListener("click", function () {
-    notif.classList.remove("show");
-    // Sau hiệu ứng fade-out, ẩn hoàn toàn phần tử sau 500ms
-    setTimeout(function () {
-      notif.classList.add("hidden");
-    }, 500);
-  });
-});
 
 // đánh giá 5* 
 document.addEventListener('DOMContentLoaded', function() {
@@ -480,4 +460,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 300);
   });
 });
-// cuộn trang web
+// Thông Báo Wwb ⭐️
+            // Lấy phần tử overlay và nút đóng
+    const overlay = document.getElementById('notification-overlay');
+    const closeBtn = overlay.querySelector('.close-btn');
+    
+    // Hàm ẩn overlay với hiệu ứng
+    function hideOverlay() {
+      overlay.classList.add('hide');
+      // Sau khi hiệu ứng hoàn thành (0.5 giây), ẩn hoàn toàn overlay khỏi flow trang
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 500);
+    }
+    
+    // Khi nhấn nút tắt, ẩn overlay
+    closeBtn.addEventListener('click', hideOverlay);
