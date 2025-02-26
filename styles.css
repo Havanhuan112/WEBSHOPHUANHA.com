@@ -215,11 +215,11 @@ header {
   margin: 0 auto;
 }
 .product-card {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid #ff66a8;
-  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #fff;
+  border-radius: 2px;
   overflow: hidden;
-  padding: 15px;
+  padding: 1px;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -229,7 +229,7 @@ header {
 }
 .product-card img {
   width: 100%;
-  border-radius: 4px;
+  border-radius: 1px;
   margin-bottom: 10px;
 }
 .product-card h4 {
@@ -962,4 +962,5 @@ footer {
     #notification-box .close-btn:hover {
       color: #333;
     }
-     
+// trang khác
+   

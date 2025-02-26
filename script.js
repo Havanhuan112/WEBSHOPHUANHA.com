@@ -476,3 +476,4 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Khi nhấn nút tắt, ẩn overlay
     closeBtn.addEventListener('click', hideOverlay);
+// Trang Khác⭐️
