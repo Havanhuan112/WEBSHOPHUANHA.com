@@ -1015,71 +1015,8 @@ footer {
     #notification-box .close-btn:hover {
       color: #333;
     }
-         /* Khung chứa giới thiệu về Admin */
-    .admin-container {
-      background: #fff;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      padding: 20px;
-      max-width: 800px;
-      margin: 0 auto;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    /* Phần tiêu đề */
-    .admin-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .admin-header h2 {
-      font-size: 28px;
-      color: #333;
-      margin: 0;
-    }
-    /* Phần thông tin */
-    .admin-info {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .admin-photo {
-      flex: 0 0 150px;
-      margin-right: 20px;
-      text-align: center;
-    }
-    .admin-photo img {
-      border-radius: 50%;
-      width: 150px;
-      height: 150px;
-      object-fit: cover;
-      border: 3px solid #007bff;
-    }
-    .admin-details {
-      flex: 1;
-      min-width: 250px;
-    }
-    .admin-details p {
-      font-size: 18px;
-      color: #555;
-      line-height: 1.6;
-    }
-    /* Phần icon liên hệ và mạng xã hội */
-    .admin-icons {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-    .admin-icons a {
-      color: #333;
-      font-size: 24px;
-      transition: color 0.3s;
-      text-decoration: none;
-    }
-    .admin-icons a:hover {
-      color: #007bff;
-    }
- 
- 
+   
+     
 </style>
   </head>
   <body>
@@ -1126,6 +1063,8 @@ WEB BÁN ĐỒ CHƠI GIÁ RẺ </span>
 </a>
 <a href="index.html" style="text-decoration: none; font-size: 15px; color: white;">
   <i class="fas fa-home"></i> Trang chủ
+</a>
+</a>
 <a href="shophang.html" style="text-decoration: none; font-size: 15px; color: white;">
   <i class="fas fa-shopping-cart"></i> Mua Vip Imazing
 </a>
@@ -1134,7 +1073,6 @@ WEB BÁN ĐỒ CHƠI GIÁ RẺ </span>
 </a>
 <a href="lienhe.html" style="text-decoration: none; font-size: 15px; color: white;">
   <i class="fas fa-user-shield"></i> Liên Hệ Admin
-</a>
 <a>
   <li>
               <button id="btnPurchaseHistory" class="nav-btn">
@@ -1285,37 +1223,24 @@ WEB BÁN ĐỒ CHƠI GIÁ RẺ </span>
 
       <!-- DANH MỤC FREE FIRE -->
       <div class="product-section">
-        <h2>LIÊN HỆ ADMIN</h2>
+        <h2>ĐỒ CHƠI FILZA</h2>
         <div class="yellow-bar"></div>
-  <div class="admin-container">
-    <!-- Tiêu đề -->
-    <div class="admin-header">
-      <h2></h2>
-    </div>
-    <!-- Thông tin Admin -->
-    <div class="admin-info">
-      <div class="admin-photo">
-        <!-- Bạn có thể thay đổi link ảnh bên dưới -->
-        <img src="https://i.imgur.com/1r1S44f.jpeg" alt="Ảnh Admin">
+      <div class="product-card">
+            <img src="https://i.imgur.com/aSPijSE.jpeg" alt="Free Fire 3" />
+            <h4>AIM FILZA GHIM ĐẦU ANTIBAND | <span style="color: red;">150.000₫</span></h4>
+            <button class="btn-play" data-product="FILZA150" data-download="https://fnote.net/notes/4phvT2">
+              <i class="fas fa-shopping-cart"></i> Mua Ngay
+            </button>
+          </div>
+  <div class="product-card">
+            <img src="https://i.imgur.com/aSPijSE.jpeg" alt="Other 2" />
+            <h4>AIM BODY FILZA VIP  (502) | <span style="color: red;">300.000₫</span></h4>
+            <button class="btn-play" data-product="FILZA300" data-download="https://fnote.org/notes/a1bVwJ">
+              <i class="fas fa-shopping-cart"></i> Mua Ngay
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="admin-details">
-        <p>
-          Xin chào! Tôi là <strong>Admin</strong>, người chịu trách nhiệm quản lý và điều hành trang web này. Với niềm đam mê công nghệ và kinh nghiệm dày dặn, tôi luôn nỗ lực mang đến trải nghiệm tốt nhất cho người dùng.
-        </p>
-        <p>
-          Nếu bạn có thắc mắc hoặc cần hỗ trợ, hãy liên hệ qua các kênh dưới đây.
-        </p>
-      </div>
-    </div>
-    <!-- Các icon liên hệ và mạng xã hội -->
-    <div class="admin-icons">
-      <a href="0325575642" title="Gọi điện"><i class="fas fa-phone"></i></a>
-      <a href="vanhuanha56@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
-      <a href="https://www.facebook.com/profile.php?id=61561543393412" title="Facebook"><i class="fab fa-facebook"></i></a>
-      <a href="https://t.me/suporthuanha" title="Instagram"><i class="fab fa-telegram"></i></a>
-    </div>
-  </div>
-       
 <!-- Phần đánh giá & bình luận -->
     <div id="reviewSection" class="review-section">
       <h2>Đánh Giá & Bình Luận</h2>
@@ -1875,7 +1800,104 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Khi nhấn nút tắt, ẩn overlay
     closeBtn.addEventListener('click', hideOverlay);
-    
+
+// số đư ⭐️⭐️
+// Đảm bảo DOM đã load
+document.addEventListener("DOMContentLoaded", function() {
+
+  // 1. Hiển thị số dư của người dùng nếu đã đăng nhập
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      var uid = user.uid;
+      var balanceRef = firebase.database().ref("users/" + uid + "/balance");
+      balanceRef.on("value", function(snapshot) {
+        var balance = snapshot.val() || 0;
+        // Hiển thị số dư (ví dụ trong thẻ span có id "userBalance")
+        document.getElementById("userBalance").innerText = "Số dư: " + balance.toLocaleString() + "₫";
+      });
+    } else {
+      document.getElementById("userBalance").innerText = "Số dư: 0₫";
+    }
+  });
+
+  // 2. Xử lý sự kiện khi nhấn nút "Mua Ngay"
+  var purchaseButtons = document.querySelectorAll(".btn-play");
+  purchaseButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      // Lấy thông tin sản phẩm từ thuộc tính data
+      var price = parseInt(button.getAttribute("data-price"));
+      var product = button.getAttribute("data-product");
+      var downloadLink = button.getAttribute("data-download");
+
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          var uid = user.uid;
+          var userRef = firebase.database().ref("users/" + uid);
+          // Lấy số dư hiện tại của người dùng
+          userRef.once("value").then(function(snapshot) {
+            var userData = snapshot.val();
+            var currentBalance = userData && userData.balance ? parseInt(userData.balance) : 0;
+            if (currentBalance >= price) {
+              // Nếu số dư đủ, trừ tiền và cập nhật lại số dư
+              var newBalance = currentBalance - price;
+              return userRef.update({ balance: newBalance })
+                .then(function() {
+                  // Lưu lịch sử mua hàng vào Firebase
+                  var purchaseHistoryRef = firebase.database().ref("purchaseHistory/" + uid);
+                  var newPurchase = {
+                    product: product,
+                    price: price,
+                    downloadLink: downloadLink,
+                    timestamp: Date.now(),
+                    status: "Thành công"
+                  };
+                  return purchaseHistoryRef.push(newPurchase);
+                })
+                .then(function() {
+                  showNotification("Mua hàng thành công!", "success");
+                  // Tạo nút tải xuống
+                  var downloadBtn = document.createElement("a");
+                  downloadBtn.href = downloadLink;
+                  downloadBtn.target = "_blank";
+                  downloadBtn.innerHTML = '<i class="fas fa-download"></i> Tải Ngay';
+                  downloadBtn.className = "download-btn";
+                  // Thêm nút tải xuống sau nút "Mua Ngay"
+                  button.parentElement.appendChild(downloadBtn);
+                })
+                .catch(function(error) {
+                  console.error("Lỗi cập nhật số dư hoặc lưu lịch sử: ", error);
+                  showNotification("Có lỗi xảy ra. Vui lòng thử lại!", "error");
+                });
+            } else {
+              // Nếu số dư không đủ
+              showNotification("Số dư không đủ để mua sản phẩm!", "error");
+            }
+          });
+        } else {
+          showNotification("Vui lòng đăng nhập để mua hàng!", "error");
+        }
+      });
+    });
+  });
+});
+
+// 3. Hàm hiển thị thông báo động
+function showNotification(message, type) {
+  var container = document.getElementById("notificationContainer");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "notificationContainer";
+    document.body.appendChild(container);
+  }
+  var notif = document.createElement("div");
+  notif.className = "notification " + type; // Ví dụ: "notification success" hoặc "notification error"
+  notif.innerText = message;
+  container.appendChild(notif);
+  // Tự động ẩn sau 3 giây
+  setTimeout(function() {
+    notif.remove();
+  }, 3000);
+}
 </script>
 
   </body>
