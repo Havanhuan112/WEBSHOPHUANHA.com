@@ -170,13 +170,14 @@ document.querySelectorAll('.btn-play').forEach((btn) => {
     // Hiển thị modal thanh toán
     showPaymentNotification(productId);
     
-    // Tạo dữ liệu giao dịch
+    // Tạo dữ liệu giao dịch và lưu thêm downloadLink
     const purchaseData = {
       status: false,
       bankInfo: "Ngân hàng Mbbank - STK: 0325575642 - Nội dung: Thanh toán " + productId,
       userEmail: user.email,
       purchaseTime: firebase.database.ServerValue.TIMESTAMP,
-      productId: productId
+      productId: productId,
+      downloadLink: downloadLink
     };
     const purchaseRef = firebase.database().ref('purchases/' + user.uid + '/' + productId);
     await purchaseRef.set(purchaseData);
@@ -246,7 +247,7 @@ document.getElementById('closePaymentNotification').addEventListener('click', ()
 });
 
 /***********************************************************
- * Xử lý nút “Xem Lịch Sửa Mua Hàng”
+ * Xử lý nút “Xem Lịch Sử Mua Hàng”
  ***********************************************************/
 document.getElementById('btnPurchaseHistory').addEventListener('click', async () => {
   const user = firebase.auth().currentUser;
@@ -266,7 +267,15 @@ document.getElementById('btnPurchaseHistory').addEventListener('click', async ()
       const data = historyData[productId];
       const purchaseTime = new Date(data.purchaseTime);
       const timeString = purchaseTime.toLocaleString();
-      const statusIcon = data.status ? '<i class="fas fa-check" style="color:#66ff66;"></i>' : '<i class="fas fa-spinner fa-spin" style="color:#ffcc00;"></i>';
+      const statusIcon = data.status 
+        ? '<i class="fas fa-check" style="color:#66ff66;"></i>' 
+        : '<i class="fas fa-spinner fa-spin" style="color:#ffcc00;"></i>';
+      
+      // Nếu thanh toán thành công và có downloadLink, thêm nút download
+      let downloadButtonHTML = "";
+      if (data.status && data.downloadLink) {
+        downloadButtonHTML = `<a class="btn-download" href="${data.downloadLink}" target="_blank">Tải Link</a>`;
+      }
       
       const itemDiv = document.createElement("div");
       itemDiv.classList.add("purchase-history-item");
@@ -276,6 +285,7 @@ document.getElementById('btnPurchaseHistory').addEventListener('click', async ()
         <p><i class="fas fa-university"></i> Ngân hàng: <strong>${data.bankInfo}</strong></p>
         <p><i class="fas fa-clock"></i> Thời gian: <strong>${timeString}</strong></p>
         <p>Trạng thái: <span class="status ${data.status ? "success" : "pending"}">${statusIcon} ${data.status ? "Thành công" : "Đang xử lý"}</span></p>
+        ${downloadButtonHTML}
       `;
       historyListDiv.appendChild(itemDiv);
     });
@@ -292,22 +302,25 @@ document.getElementById('btnPurchaseHistory').addEventListener('click', async ()
 document.getElementById('closePurchaseHistory').addEventListener('click', () => {
   document.getElementById('purchaseHistoryModal').classList.add('hidden');
 });
+
+/***********************************************************
+ * Các chức năng khác: Toggle menu, hiển thị Warning
+ ***********************************************************/
 function toggleMenu() {
-      document.getElementById("sidebar").classList.toggle("active");
-    }
+  document.getElementById("sidebar").classList.toggle("active");
+}
 
-    function openWarning() {
-      document.getElementById("warningBox").style.display = "block";
-    }
+function openWarning() {
+  document.getElementById("warningBox").style.display = "block";
+}
 
-    function closeWarning() {
-      document.getElementById("warningBox").style.display = "none";
-    }
-  // thông báo 
+function closeWarning() {
+  document.getElementById("warningBox").style.display = "none";
+}
 
-      // Hiển thị thông báo tự động khi trang được tải
-
-// đánh giá 5* 
+/***********************************************************
+ * Đánh giá 5 sao và gửi bình luận
+ ***********************************************************/
 document.addEventListener('DOMContentLoaded', function() {
   // --- Xử lý chọn số sao ---
   var stars = document.querySelectorAll('.rating .star');
@@ -366,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
       timestamp: firebase.database.ServerValue.TIMESTAMP
     };
     
-    // Lưu vào Firebase (nút 'reviews')
+    // Lưu vào Firebase (node 'reviews')
     firebase.database().ref('reviews').push(reviewObj)
       .then(function() {
         // Xóa form sau khi gửi
@@ -380,45 +393,45 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // --- Hàm hiển thị đánh giá ---
-  // Hàm hiển thị đánh giá (bình luận) với ngày gửi
-function displayReview(reviewId, reviewData) {
-  var div = document.createElement('div');
-  div.classList.add('review-item');
+  function displayReview(reviewId, reviewData) {
+    var div = document.createElement('div');
+    div.classList.add('review-item');
 
-  // Tạo HTML hiển thị số sao
-  var ratingHTML = '';
-  for (var i = 1; i <= reviewData.rating; i++) {
-    ratingHTML += '<i class="fa-solid fa-star"></i>';
+    // Tạo HTML hiển thị số sao
+    var ratingHTML = '';
+    for (var i = 1; i <= reviewData.rating; i++) {
+      ratingHTML += '<i class="fa-solid fa-star"></i>';
+    }
+    for (var i = reviewData.rating; i < 5; i++) {
+      ratingHTML += '<i class="fa-regular fa-star"></i>';
+    }
+
+    // Chuyển đổi timestamp thành định dạng ngày giờ dễ đọc
+    var date = new Date(reviewData.timestamp);
+    var formattedDate = date.toLocaleString();
+
+    // Hiển thị email, ngày gửi, đánh giá sao và nội dung bình luận
+    div.innerHTML = `
+      <div class="review-header">
+        <div class="review-email">${reviewData.email}</div>
+        <div class="review-date">${formattedDate}</div>
+      </div>
+      <div class="review-rating">${ratingHTML}</div>
+      <div class="review-text">${reviewData.text}</div>
+    `;
+    reviewList.appendChild(div);
   }
-  for (var i = reviewData.rating; i < 5; i++) {
-    ratingHTML += '<i class="fa-regular fa-star"></i>';
-  }
-
-  // Chuyển đổi timestamp thành định dạng ngày giờ dễ đọc
-  var date = new Date(reviewData.timestamp);
-  var formattedDate = date.toLocaleString(); // Bạn có thể thay đổi định dạng nếu cần
-
-  // Hiển thị email, ngày gửi, đánh giá sao và nội dung bình luận
-  div.innerHTML = `
-    <div class="review-header">
-      <div class="review-email">${reviewData.email}</div>
-      <div class="review-date">${formattedDate}</div>
-    </div>
-    <div class="review-rating">${ratingHTML}</div>
-    <div class="review-text">${reviewData.text}</div>
-  `;
-
-  reviewList.appendChild(div);
-}
-// --- Lắng nghe đánh giá mới từ Firebase ---
+  
+  // --- Lắng nghe đánh giá mới từ Firebase ---
   firebase.database().ref('reviews').on('child_added', function(snapshot) {
     var reviewData = snapshot.val();
     displayReview(snapshot.key, reviewData);
   });
 });
 
-// chat  với huấn hà 
- // thông báo
+/***********************************************************
+ * Chat với Huấn Hà: Hiển thị thông tin tài khoản
+ ***********************************************************/
 document.addEventListener("DOMContentLoaded", function () {
   const accountInfoIcon = document.getElementById("accountInfoIcon");
   const accountInfoModal = document.getElementById("accountInfoModal");
@@ -434,15 +447,14 @@ document.addEventListener("DOMContentLoaded", function () {
       alert("Bạn cần đăng nhập để xem thông tin tài khoản.");
       return;
     }
-    // Lấy dữ liệu người dùng từ Firebase (giả sử dữ liệu được lưu tại node "users/{uid}" với các trường email, password, registerTime)
+    // Lấy dữ liệu người dùng từ Firebase (giả sử dữ liệu được lưu tại node "users/{uid}")
     firebase.database().ref("users/" + currentUser.uid).on("value", function (snapshot) {
       const userData = snapshot.val();
       if (userData) {
         accountEmailDisplay.textContent = userData.email;
         accountPasswordDisplay.textContent = userData.password; // Lưu ý: chỉ sử dụng cho demo; không nên lưu mật khẩu dưới dạng plaintext
-        // Chuyển đổi timestamp thành định dạng ngày tháng năm dễ đọc
         const regTime = new Date(userData.registerTime);
-        accountRegisterTime.textContent = regTime.toLocaleString(); // hoặc regTime.toLocaleDateString() cho chỉ ngày tháng năm
+        accountRegisterTime.textContent = regTime.toLocaleString();
       }
     });
     accountInfoModal.classList.remove("acc-hidden");
@@ -460,20 +472,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 300);
   });
 });
-// Thông Báo Wwb ⭐️
-            // Lấy phần tử overlay và nút đóng
-    const overlay = document.getElementById('notification-overlay');
-    const closeBtn = overlay.querySelector('.close-btn');
-    
-    // Hàm ẩn overlay với hiệu ứng
-    function hideOverlay() {
-      overlay.classList.add('hide');
-      // Sau khi hiệu ứng hoàn thành (0.5 giây), ẩn hoàn toàn overlay khỏi flow trang
-      setTimeout(() => {
-        overlay.style.display = 'none';
-      }, 500);
-    }
-    
-    // Khi nhấn nút tắt, ẩn overlay
-    closeBtn.addEventListener('click', hideOverlay);
-// Trang Khác⭐️
+
+/***********************************************************
+ * Thông Báo Wwb
+ ***********************************************************/
+const overlay = document.getElementById('notification-overlay');
+const closeBtn = overlay.querySelector('.close-btn');
+
+function hideOverlay() {
+  overlay.classList.add('hide');
+  setTimeout(() => {
+    overlay.style.display = 'none';
+  }, 500);
+}
+
+closeBtn.addEventListener('click', hideOverlay);
