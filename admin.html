@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <!-- Ngăn zoom trên thiết bị di động -->
+ 
+  <title>Admin Panel</title>
+  <!-- Link FontAwesome để sử dụng icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" 
+        />
+  <!-- Thư viện SweetAlert2 và Firebase (phiên bản 8.x) -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <style>
+    /* ------------------------- */
+    /* 1. Reset & Global Styles  */
+    /* ------------------------- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #74ABE2, #5563DE);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    /* ------------------------- */
+    /* 2. Login Form Styles      */
+    /* ------------------------- */
+    #loginContainer {
+      background: #fff;
+      padding: 40px;
+      border-radius: 8px;
+      width: 300px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    #loginContainer h2 { margin-bottom: 20px; color: #333; }
+    #loginContainer input[type="email"],
+    #loginContainer input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    #loginContainer button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      background: #5563DE;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #loginContainer button:hover { background: #4353c9; }
+    /* Nút Quên mật khẩu */
+    #forgotPasswordLink {
+      cursor: pointer;
+      color: #5563DE;
+      margin-top: 10px;
+      text-decoration: underline;
+      font-size: 14px;
+    }
+    /* ------------------------- */
+    /* 3. Admin Panel Container  */
+    /* ------------------------- */
+    #adminContainer {
+      display: none; /* Hiển thị khi đăng nhập thành công */
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+    /* ------------------------- */
+    /* 4. Sidebar Styles         */
+    /* ------------------------- */
+    .sidebar {
+      background-color: #2c3e50;
+      width: 250px;
+      color: #ecf0f1;
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+    .sidebar h2 { text-align: center; margin-bottom: 20px; }
+    .sidebar ul { list-style: none; margin-top: 20px; }
+    .sidebar li {
+      padding: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    .sidebar li:hover,
+    .sidebar li.active { background-color: #34495e; }
+    /* ------------------------- */
+    /* 5. Main Content Styles    */
+    /* ------------------------- */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background-color: #ecf0f1;
+      position: relative;
+    }
+    .section { display: none; animation: fadeIn 0.5s; }
+    .section.active { display: block; }
+    /* ------------------------- */
+    /* 5a. Dashboard Stats       */
+    /* ------------------------- */
+    .stats-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    .stat-box {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 10px;
+      flex: 1 1 200px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .stat-box i {
+      font-size: 36px;
+      color: #5563DE;
+      margin-bottom: 10px;
+    }
+    .stat-box h3 {
+      font-size: 24px;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    .stat-box p {
+      font-size: 16px;
+      color: #777;
+    }
+    /* ------------------------- */
+    /* 6. Table Styles           */
+    /* ------------------------- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    table th, table td {
+      padding: 12px;
+      border: 1px solid #bdc3c7;
+      text-align: left;
+    }
+    table th { background-color: #34495e; color: #ecf0f1; }
+    /* ------------------------- */
+    /* 7. Button Styles          */
+    /* ------------------------- */
+    button.action-btn {
+      padding: 6px 10px;
+      margin-right: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s, transform 0.2s;
+    }
+    button.decode-btn { background-color: #2980b9; color: #fff; }
+    button.decode-btn:hover { background-color: #1f6391; transform: scale(1.05); }
+    button.delete-btn { background-color: #c0392b; color: #fff; }
+    button.delete-btn:hover { background-color: #a93226; transform: scale(1.05); }
+    button.ban-btn { background-color: #8e44ad; color: #fff; }
+    button.ban-btn:hover { background-color: #7d3ca5; transform: scale(1.05); }
+    button.approve-btn {
+      background-color: #27ae60;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    button.approve-btn:hover { background-color: #1e8449; transform: scale(1.05); }
+    /* ------------------------- */
+    /* 8. Nút Đăng xuất         */
+    /* ------------------------- */
+    #logoutButton {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #c0392b;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #logoutButton:hover { background: #a93226; }
+    /* ------------------------- */
+    /* 9. Animation              */
+    /* ------------------------- */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    /* Ngăn zoom khi tương tác trên iOS */
+    input, select, textarea, button {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+    * { -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body>
+  <!-- Form Đăng nhập -->
+  <div id="loginContainer">
+    <h2>Admin Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button id="loginButton">Đăng nhập</button>
+    <p id="forgotPasswordLink">Quên mật khẩu?</p>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="adminContainer">
+    <!-- Nút Đăng xuất -->
+    <button id="logoutButton">Đăng xuất</button>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+      <h2>Admin Panel</h2>
+      <ul>
+        <li id="navDashboard" class="active">Dashboard</li>
+        <li id="navUsers">Users</li>
+        <li id="navRecharge">Recharge Requests</li>
+        <li id="navOrders">Orders</li>
+      </ul>
+    </div>
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Dashboard Section -->
+      <div id="dashboardSection" class="section active">
+        <h1>Dashboard</h1>
+        <!-- Phần thống kê tổng hợp -->
+        <div class="stats-container">
+          <div class="stat-box">
+            <i class="fas fa-users"></i>
+            <h3 id="userCount">0</h3>
+            <p>Người dùng đăng ký</p>
+          </div>
+          <div class="stat-box">
+            <i class="fas fa-dollar-sign"></i>
+            <h3 id="rechargeCount">0</h3>
+            <p>Nạp tiền thành công</p>
+          </div>
+          <div class="stat-box">
+            <i class="fas fa-hourglass-half"></i>
+            <h3 id="pendingRechargeCount">0</h3>
+            <p>Đơn nạp chờ duyệt</p>
+          </div>
+          <div class="stat-box">
+            <i class="fas fa-shopping-cart"></i>
+            <h3 id="orderCount">0</h3>
+            <p>Đơn hàng mua</p>
+          </div>
+          <div class="stat-box">
+            <i class="fas fa-user-check"></i>
+            <h3 id="activeUserCount">0</h3>
+            <p>Người dùng hoạt động</p>
+          </div>
+        </div>
+       
+      </div>
+      <!-- Users Section -->
+      <div id="usersSection" class="section">
+        <h1>Danh sách Users</h1>
+        <table id="usersTable">
+          <thead>
+            <tr>
+              <!-- Hiển thị UID, tên đăng ký và email -->
+              <th>User Info</th>
+              <th>Balance</th>
+              <th>Encoded Info</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu Users được load từ Firebase -->
+          </tbody>
+        </table>
+      </div>
+      <!-- Recharge Requests Section -->
+      <div id="rechargeSection" class="section">
+        <h1>Yêu cầu Nạp tiền</h1>
+        <table id="rechargeTable">
+          <thead>
+            <tr>
+              <th>Request ID</th>
+              <th>User ID</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Card Type</th>
+              <th>Card Serial</th>
+              <th>Card Code</th>
+              <th>Status</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu Recharge Requests được load từ Firebase -->
+          </tbody>
+        </table>
+      </div>
+      <!-- Orders Section -->
+      <div id="ordersSection" class="section">
+        <h1>Đơn hàng</h1>
+        <table id="ordersTable">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>User ID</th>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Time</th>
+              <th>Download</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu Orders được load từ Firebase -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Cấu hình Firebase – thay thông tin dưới đây bằng thông tin dự án của bạn.
+    var firebaseConfig = {
+      apiKey: "AIzaSyDExsK60Qz5T7INkOA-6lnxURB0vPOrpbI",
+      authDomain: "havanhuan-login.firebaseapp.com",
+      databaseURL: "https://havanhuan-login-default-rtdb.firebaseio.com",
+      projectId: "havanhuan-login",
+      storageBucket: "havanhuan-login.firebasestorage.app",
+      messagingSenderId: "1048157715289",
+      appId: "1:1048157715289:web:075769c06baa553eee6a48",
+      measurementId: "G-6FLD3F92BE"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // DOM Elements cho Đăng nhập
+    const loginContainer = document.getElementById("loginContainer");
+    const adminContainer = document.getElementById("adminContainer");
+    const loginEmail = document.getElementById("loginEmail");
+    const loginPassword = document.getElementById("loginPassword");
+    const loginButton = document.getElementById("loginButton");
+    const logoutButton = document.getElementById("logoutButton");
+
+    // DOM Elements cho Navigation & Sections
+    const navDashboard = document.getElementById("navDashboard");
+    const navUsers = document.getElementById("navUsers");
+    const navRecharge = document.getElementById("navRecharge");
+    const navOrders = document.getElementById("navOrders");
+    const sections = {
+      dashboard: document.getElementById("dashboardSection"),
+      users: document.getElementById("usersSection"),
+      recharge: document.getElementById("rechargeSection"),
+      orders: document.getElementById("ordersSection")
+    };
+
+    function showSection(sectionName) {
+      document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
+      Object.values(sections).forEach(sec => sec.classList.remove("active"));
+      switch(sectionName) {
+        case "dashboard":
+          navDashboard.classList.add("active");
+          sections.dashboard.classList.add("active");
+          loadDashboardStats();
+          break;
+        case "users":
+          navUsers.classList.add("active");
+          sections.users.classList.add("active");
+          loadUsers();
+          break;
+        case "recharge":
+          navRecharge.classList.add("active");
+          sections.recharge.classList.add("active");
+          loadRechargeRequests();
+          break;
+        case "orders":
+          navOrders.classList.add("active");
+          sections.orders.classList.add("active");
+          loadOrders();
+          break;
+      }
+    }
+
+    navDashboard.addEventListener("click", () => showSection("dashboard"));
+    navUsers.addEventListener("click", () => showSection("users"));
+    navRecharge.addEventListener("click", () => showSection("recharge"));
+    navOrders.addEventListener("click", () => showSection("orders"));
+
+    /********************************
+     * Chức năng Đăng nhập
+     ********************************/
+    loginButton.addEventListener("click", function() {
+      const email = loginEmail.value.trim();
+      const password = loginPassword.value.trim();
+      firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        loginContainer.style.display = "none";
+        adminContainer.style.display = "flex";
+        showSection("dashboard");
+      })
+      .catch((error) => {
+        Swal.fire("Lỗi", error.message, "error");
+      });
+    });
+
+    logoutButton.addEventListener("click", function() {
+      firebase.auth().signOut().then(() => {
+        adminContainer.style.display = "none";
+        loginContainer.style.display = "block";
+      }).catch((error) => {
+        Swal.fire("Lỗi", error.message, "error");
+      });
+    });
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        loginContainer.style.display = "none";
+        adminContainer.style.display = "flex";
+      } else {
+        loginContainer.style.display = "block";
+        adminContainer.style.display = "none";
+      }
+    });
+
+    /********************************
+     * Chức năng lấy lại mật khẩu qua email
+     ********************************/
+    document.getElementById("forgotPasswordLink").addEventListener("click", function() {
+      Swal.fire({
+        title: 'Lấy lại mật khẩu',
+        input: 'email',
+        inputLabel: 'Nhập email của bạn',
+        inputPlaceholder: 'Email của bạn',
+        showCancelButton: true,
+        confirmButtonText: 'Gửi email đặt lại mật khẩu',
+        preConfirm: (email) => {
+          if (!email) {
+            Swal.showValidationMessage("Vui lòng nhập email!");
+          }
+          return firebase.auth().sendPasswordResetEmail(email)
+            .catch(error => {
+              Swal.showValidationMessage(`Lỗi: ${error.message}`);
+            });
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire("Thành công", "Email đặt lại mật khẩu đã được gửi.", "success");
+        }
+      });
+    });
+
+    /********************************
+     * Utility: Giải mã Base64 (cho user)
+     ********************************/
+    function decodeUserInfo(encodedStr) {
+      let decoded = "";
+      try { decoded = atob(encodedStr); }
+      catch(e) { decoded = "Không thể giải mã thông tin."; }
+      Swal.fire({ title: "Thông tin đã giải mã", text: decoded, icon: "info" });
+    }
+
+    /********************************
+     * Xóa tài khoản (User)
+     ********************************/
+    function deleteUser(uid) {
+      Swal.fire({
+        title: "Xác nhận",
+        text: "Bạn có chắc chắn muốn xóa tài khoản này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy"
+      }).then((result) => {
+        if(result.isConfirmed) {
+          firebase.database().ref("users/" + uid).remove()
+          .then(() => { Swal.fire("Thành công", "Tài khoản đã được xóa.", "success"); loadUsers(); })
+          .catch(err => { Swal.fire("Lỗi", "Không thể xóa tài khoản.", "error"); });
+        }
+      });
+    }
+
+    /********************************
+     * Cấm/Bỏ cấm tài khoản
+     ********************************/
+    function toggleBanUser(uid, currentBanStatus) {
+      let newStatus = !currentBanStatus;
+      let actionText = newStatus ? "cấm" : "bỏ cấm";
+      Swal.fire({
+        title: "Xác nhận",
+        text: "Bạn có chắc chắn muốn " + actionText + " tài khoản này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Hủy"
+      }).then((result) => {
+        if(result.isConfirmed) {
+          firebase.database().ref("users/" + uid).update({ banned: newStatus })
+          .then(() => { Swal.fire("Thành công", "Tài khoản đã được cập nhật.", "success"); loadUsers(); })
+          .catch(err => { Swal.fire("Lỗi", "Không thể cập nhật tài khoản.", "error"); });
+        }
+      });
+    }
+
+    /********************************
+     * Load dữ liệu Users từ Firebase
+     * Hiển thị cột "User Info" gồm cả UID, tên đăng ký và email
+     ********************************/
+    function loadUsers() {
+      const usersTableBody = document.querySelector("#usersTable tbody");
+      usersTableBody.innerHTML = "";
+      firebase.database().ref("users").once("value").then(snapshot => {
+        snapshot.forEach(child => {
+          const uid = child.key;
+          const data = child.val();
+          const userInfo = uid + " (" + (data.displayName || "Chưa đặt tên") + ") - " + (data.email || "N/A");
+          let encodedDisplay = data.encodedInfo ? data.encodedInfo.substring(0,20) + "..." : "N/A";
+          let actionsHTML = "";
+          if(data.encodedInfo){
+            actionsHTML += `<button class="action-btn decode-btn" data-info="${data.encodedInfo}">Giải mã</button>`;
+          }
+          actionsHTML += `<button class="action-btn delete-btn" data-uid="${uid}">Xóa</button>`;
+          actionsHTML += `<button class="action-btn ban-btn" data-uid="${uid}" data-banned="${data.banned ? true : false}">${data.banned ? "Bỏ cấm" : "Cấm"}</button>`;
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${userInfo}</td>
+            <td>${data.balance || 0}</td>
+            <td>${data.encodedInfo ? encodedDisplay : "N/A"}</td>
+            <td>${actionsHTML}</td>
+          `;
+          usersTableBody.appendChild(tr);
+        });
+        document.querySelectorAll(".decode-btn").forEach(btn => {
+          btn.addEventListener("click", function(){
+            let encoded = this.getAttribute("data-info");
+            decodeUserInfo(encoded);
+          });
+        });
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+          btn.addEventListener("click", function(){
+            let uid = this.getAttribute("data-uid");
+            deleteUser(uid);
+          });
+        });
+        document.querySelectorAll(".ban-btn").forEach(btn => {
+          btn.addEventListener("click", function(){
+            let uid = this.getAttribute("data-uid");
+            let banned = this.getAttribute("data-banned") === "true";
+            toggleBanUser(uid, banned);
+          });
+        });
+      }).catch(err => { console.error("Error loading users:", err); });
+    }
+
+    /********************************
+     * Load dữ liệu Recharge Requests từ Firebase
+     * Hiển thị đầy đủ thông tin nếu loại nạp là "card"
+     ********************************/
+    function loadRechargeRequests() {
+      const rechargeTableBody = document.querySelector("#rechargeTable tbody");
+      rechargeTableBody.innerHTML = "";
+      firebase.database().ref("rechargeRequests").once("value").then(snapshot => {
+        snapshot.forEach(child => {
+          const reqId = child.key;
+          const data = child.val();
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${reqId}</td>
+            <td>${data.userId}</td>
+            <td>${data.type}</td>
+            <td>${data.amount}</td>
+            <td>${data.type === "card" ? (data.cardType || "N/A") : "-"}</td>
+            <td>${data.type === "card" ? (data.cardSerial || "N/A") : "-"}</td>
+            <td>${data.type === "card" ? (data.cardCode || "N/A") : "-"}</td>
+            <td>${data.status ? "Đã duyệt" : "Chưa duyệt"}</td>
+            <td>${(!data.status) ? `<button class="approve-btn" data-req="${reqId}" data-user="${data.userId}" data-amount="${data.amount}">Duyệt</button>` : ""}</td>
+          `;
+          rechargeTableBody.appendChild(tr);
+        });
+        document.querySelectorAll(".approve-btn").forEach(btn => {
+          btn.addEventListener("click", function() {
+            const reqId = this.getAttribute("data-req");
+            const userId = this.getAttribute("data-user");
+            const amount = parseInt(this.getAttribute("data-amount"), 10);
+            approveRechargeRequest(reqId, userId, amount);
+          });
+        });
+      }).catch(err => { console.error("Error loading recharge requests:", err); });
+    }
+
+    /********************************
+     * Duyệt yêu cầu nạp tiền
+     * Sửa lỗi cập nhật số dư 2 lần bằng cách cập nhật luôn trường "processed"
+     ********************************/
+    function approveRechargeRequest(reqId, userId, amount) {
+      firebase.database().ref("rechargeRequests/" + reqId).update({ status: true, processed: true })
+      .then(() => {
+        const userBalanceRef = firebase.database().ref("users/" + userId + "/balance");
+        userBalanceRef.transaction((currentBalance) => {
+          return (currentBalance || 0) + amount;
+        }).then(() => {
+          Swal.fire("Thành công", "Yêu cầu đã được duyệt và số dư của user được cập nhật.", "success");
+          loadRechargeRequests();
+          loadUsers();
+          loadDashboardStats();
+        });
+      }).catch(err => {
+        console.error("Error approving request:", err);
+        Swal.fire("Lỗi", "Có lỗi xảy ra khi duyệt yêu cầu.", "error");
+      });
+    }
+
+    /********************************
+     * Load dữ liệu Orders từ Firebase
+     * (orders được lưu theo dạng orders/{uid}/{orderId})
+     ********************************/
+    function loadOrders() {
+      const ordersTableBody = document.querySelector("#ordersTable tbody");
+      ordersTableBody.innerHTML = "";
+      firebase.database().ref("orders").once("value").then(snapshot => {
+        snapshot.forEach(userOrdersSnap => {
+          const userId = userOrdersSnap.key;
+          userOrdersSnap.forEach(orderSnap => {
+            const orderId = orderSnap.key;
+            const orderData = orderSnap.val();
+            const date = new Date(orderData.timestamp).toLocaleString();
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${orderId}</td>
+              <td>${userId}</td>
+              <td>${orderData.productName}</td>
+              <td>${orderData.price}</td>
+              <td>${date}</td>
+              <td><a href="${orderData.downloadLink}" target="_blank">Tải</a></td>
+            `;
+            ordersTableBody.appendChild(tr);
+          });
+        });
+      }).catch(err => { console.error("Error loading orders:", err); });
+    }
+
+    /********************************
+     * Dashboard Stats: Tính toán và hiển thị các chỉ số
+     ********************************/
+    function loadDashboardStats() {
+      // Số lượng người dùng đăng ký
+      firebase.database().ref("users").once("value").then(snapshot => {
+        document.getElementById("userCount").textContent = snapshot.numChildren();
+      });
+      // Số lượng yêu cầu nạp tiền thành công (status=true)
+      firebase.database().ref("rechargeRequests").orderByChild("status").equalTo(true).once("value").then(snapshot => {
+        document.getElementById("rechargeCount").textContent = snapshot.numChildren();
+      });
+      // Số lượng đơn nạp tiền đang chờ (status=false)
+      firebase.database().ref("rechargeRequests").orderByChild("status").equalTo(false).once("value").then(snapshot => {
+        document.getElementById("pendingRechargeCount").textContent = snapshot.numChildren();
+      });
+      // Số lượng đơn hàng (tính tổng số order của tất cả người dùng)
+      firebase.database().ref("orders").once("value").then(snapshot => {
+        let totalOrders = 0;
+        snapshot.forEach(userSnap => {
+          totalOrders += userSnap.numChildren();
+        });
+        document.getElementById("orderCount").textContent = totalOrders;
+      });
+      // Số lượng người dùng hoạt động (giả sử có node "status" với giá trị "online")
+      firebase.database().ref("status").orderByValue().equalTo("online").once("value").then(snapshot => {
+        document.getElementById("activeUserCount").textContent = snapshot.numChildren();
+      });
+    }
+  </script>
+</body>
+</html>
+
